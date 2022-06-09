@@ -3,7 +3,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const date = require(__dirname + "/date.js");
 
 const app = express();
 
@@ -16,11 +15,31 @@ mongoose.connect("mongodb://localhost:27017/todolistDB", {
   useNewUrlParser: true,
 });
 
-const itemsSchema ({
-  name: String
+const itemsSchema = {
+  name: String,
+};
+
+const Item = mongoose.model("Item", itemsSchema);
+
+const item1 = new Item({
+  name: "Welcome to your toolist!",
+});
+const item2 = new Item({
+  name: "Mango",
+});
+const item3 = new Item({
+  name: "Strawberry!",
 });
 
-const = mongoose.model('item', itemsSchema);
+const defaultItems = [item1, item2, item3];
+
+Item.insertMany(defaultItems, function (err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Added successfully!!!");
+  }
+});
 
 app.get("/", function (req, res) {
   const day = date.getDate();
@@ -41,7 +60,7 @@ app.post("/", function (req, res) {
 });
 
 app.get("/work", function (req, res) {
-  res.render("list", { listTitle: "Work List", newListItems: workItems });
+  res.render("list", { listTitle: "Today", newListItems: items });
 });
 
 app.get("/about", function (req, res) {
